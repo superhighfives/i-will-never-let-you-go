@@ -26705,15 +26705,23 @@
                   value: function (a) {
                     this.webcamInitiated = !0;
                     const video = (window.matchMedia("(orientation: landscape)").matches) ? {aspectRatio: 16/9} : {aspectRatio: 9/16}
+
                     var constraints = { video, audio: false };
-                        navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-                          a.onloadedmetadata = function (b) {
-                            p.instance.setupWebcam(), new c(a), d.webcamInitiated(), d.start(), a.play();
-                          }
-                            a.srcObject = stream
-                          }).catch((err) => {
-                            d.initiateWebcamFailure(err);
-                          })
+                    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                      a.onloadedmetadata = function (b) {
+                        p.instance.setupWebcam(), new c(a), d.webcamInitiated(), d.start(), a.play();
+                      }
+                        a.srcObject = stream
+                      }).catch((err) => {
+                        d.initiateWebcamFailure(err);
+                      })
+
+                    window.addEventListener("resize", function() {
+                      navigator.mediaDevices.getUserMedia({video: (window.matchMedia("(orientation: landscape)").matches) ? {aspectRatio: 16/9} : {aspectRatio: 9/16}}).then((newStream) => {
+                        a.srcObject = newStream
+                        a.play()
+                      })
+                    }, false);
                   },
                 },
                 {
