@@ -26703,25 +26703,52 @@
                 {
                   key: "setupWebcam",
                   value: function (a) {
+
+                  function isLandscapeOrientation() {
+                    if(window.orientation === 0) {
+                      return false
+                    } else if (window.orientation === -180) {
+                      return false
+                    } else if (window.orientation === 90) {
+                      return true
+                    } else if (window.orientation === -90) {
+                      return true
+                    } else if (screen.orientation.angle === 0) {
+                      return true
+                    } else {
+                      return true
+                    }
+                  }
+
                     this.webcamInitiated = !0;
-                    const video = (window.matchMedia("(orientation: landscape)").matches) ? {aspectRatio: 16/9} : {aspectRatio: 9/16}
+                    const video = isLandscapeOrientation() ? {aspectRatio: 16/9} : {aspectRatio: 9/16}
 
                     var constraints = { video, audio: false };
                     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
                       a.onloadedmetadata = function (b) {
-                        p.instance.setupWebcam(), new c(a), d.webcamInitiated(), d.start(), a.play();
+                        a.play();
                       }
+
                         a.srcObject = stream
+                        p.instance.setupWebcam()
+                        new c(a)
+                        d.webcamInitiated()
+                        d.start()
+
+                        window.addEventListener("orientationchange", function() {
+                          a.pause()
+                          a.srcObject = null
+                          navigator.mediaDevices.getUserMedia({video: isLandscapeOrientation() ? {aspectRatio: 16/9} : {aspectRatio: 9/16}}).then((newStream) => {
+                            a.srcObject = stream = newStream
+                            a.play()
+                          })
+                        });
+
                       }).catch((err) => {
                         d.initiateWebcamFailure(err);
                       })
 
-                    window.addEventListener("resize", function() {
-                      navigator.mediaDevices.getUserMedia({video: (window.matchMedia("(orientation: landscape)").matches) ? {aspectRatio: 16/9} : {aspectRatio: 9/16}}).then((newStream) => {
-                        a.srcObject = newStream
-                        a.play()
-                      })
-                    }, false);
+                      
                   },
                 },
                 {
