@@ -26704,7 +26704,8 @@
                   key: "setupWebcam",
                   value: function (a) {
                     this.webcamInitiated = !0;
-                    var constraints = { video: true, audio: false };
+                    const video = (window.matchMedia("(orientation: landscape)").matches) ? {aspectRatio: 16/9} : {aspectRatio: 9/16}
+                    var constraints = { video, audio: false };
                         navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
                           a.onloadedmetadata = function (b) {
                             p.instance.setupWebcam(), new c(a), d.webcamInitiated(), d.start(), a.play();
