@@ -26670,6 +26670,9 @@
                       this.webcam.setAttribute('webkit-playsinline', 'webkit-playsinline'),
                       this.video.setAttribute('playsinline', 'playsinline'),
                       this.webcam.setAttribute('playsinline', 'playsinline'),
+                      this.webcam.setAttribute('muted', 'muted'),
+                      this.webcam.setAttribute('autoPlay', 'autoPlay'),
+                      this.webcam.setAttribute('autoplay', 'autoplay'),
                       this.setupVideo(this.video),
                       this.setupTimeline();
                   },
@@ -26701,12 +26704,12 @@
                   key: "setupWebcam",
                   value: function (a) {
                     this.webcamInitiated = !0;
-                    var constraints = { video: { mandatory: { minWidth: 720, minHeight: 480 } } };
+                    var constraints = { video: true, audio: false };
                         navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                          a.onloadedmetadata = function (b) {
+                            p.instance.setupWebcam(), new c(a), d.webcamInitiated(), d.start(), a.play();
+                          }
                             a.srcObject = stream
-                            a.onloadedmetadata = function (b) {
-                              p.instance.setupWebcam(), new c(a), d.webcamInitiated(), d.start();
-                            }
                           }).catch((err) => {
                             d.initiateWebcamFailure(err);
                           })
@@ -26879,7 +26882,7 @@
                         g.createElement("span", { onClick: this.handleWebcam.bind(this), className: d }, g.createElement("svg", { className: "icon", dangerouslySetInnerHTML: { __html: f } }))
                       ),
                       g.createElement("video", { className: "player__video", muted: this.state.looping, loop: this.state.looping, src: this.state.url }),
-                      g.createElement("video", { className: "player__webcam", autoPlay: !0 })
+                      g.createElement("video", { className: "player__webcam", autoPlay: true })
                     );
                   },
                 },
