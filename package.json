@@ -1,0 +1,13 @@
+{
+  "name": "iwnlyg",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/superhighfives/iwnlyg.git"
+  },
+  "scripts": {
+    "deploy": "npx wrangler pages publish . --project-name iwillneverletyougo"
+  },
+  "license": "MIT",
+  "homepage": "https://iwillneverletyougo.wearebrightly.com"
+}
