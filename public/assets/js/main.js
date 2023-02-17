@@ -17755,7 +17755,7 @@
           "use strict";
           (f = (function () {
             function a(b) {
-              e(this, a), (this.webcam = b), this.createCanvas(), this.setupCanvas(), this.attachEvents();
+              e(this, a), (this.webcam = b), this.createCanvas(), this.setupCanvas();
             }
             return (
               d(a, [
@@ -17768,19 +17768,20 @@
                 {
                   key: "attachEvents",
                   value: function () {
-                    this.webcam.addEventListener("canplay", this.setupCanvas.bind(this));
                   },
                 },
                 {
                   key: "setupCanvas",
                   value: function () {
-                    this.webcamStreaming ||
-                      ((this.webcamCanvas.width = 3 * this.webcam.videoWidth),
-                      (this.webcamCanvas.height = this.webcam.videoHeight),
-                      (this.webcamStreaming = !0),
+                    console.log('Attempting image capture')
+                    try {
                       this.captureImage().then(function (a) {
+                        console.log("Image captured")
                         c.imageCaptured(a);
-                      }));
+                      })
+                    } catch(e) {
+                      console.log(e)
+                    }
                   },
                 },
                 {
@@ -17798,7 +17799,6 @@
                   value: function () {
                     var a = this;
                     return new b(function (c, d) {
-                      if (!a.webcam.paused && !a.webcam.ended) {
                         for (
                           var e = 3,
                             f = [],
@@ -17807,7 +17807,7 @@
                                 setTimeout(function () {
                                   var d = c * a.webcam.videoWidth;
                                   a.webcamContext.drawImage(a.webcam, d, 0, a.webcam.videoWidth, a.webcamCanvas.height), b();
-                                }, 1e4 * (c + 1));
+                                }, 1000 * (c + 1));
                               })),
                                 f.push(i);
                             },
@@ -17824,7 +17824,6 @@
                           var d = a.webcamCanvas.toDataURL("image/jpeg", 0.8).split(",")[1];
                           c(d);
                         });
-                      }
                     });
                   },
                 },
@@ -26146,7 +26145,9 @@
           },
         ],
         execute: function () {
-          a("default", new b.Dispatcher());
+          var dispatcher = new b.Dispatcher()
+          window.Dispatcher = dispatcher
+          a("default", dispatcher);
         },
       };
     }),
