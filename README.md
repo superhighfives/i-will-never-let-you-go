@@ -17,7 +17,9 @@ You can [check out my other music here](https://wearebrightly.com).
 ## Getting started
 
 ````
-npx serve .
+npm install
+npm run start
+npm run deploy
 ````
 
 ## Deployment
