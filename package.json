@@ -6,7 +6,7 @@
     "url": "git+https://github.com/superhighfives/iwnlyg.git"
   },
   "scripts": {
-    "start": "npx serve publish"
+    "start": "npx serve publish",
     "deploy": "npx wrangler pages publish . --project-name iwillneverletyougo"
   },
   "license": "MIT",
