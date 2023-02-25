@@ -17762,7 +17762,16 @@
                 {
                   key: "createCanvas",
                   value: function () {
-                    (this.webcamCanvas = document.createElement("canvas")), (this.webcamCanvas.id = "webcamCanvas"), (this.webcamContext = this.webcamCanvas.getContext("2d"));
+                    // TODO: Check size
+                    this.webcamCanvas = document.createElement("canvas");
+                    this.webcamCanvas.id = "webcamCanvas";
+                    this.webcamContext = this.webcamCanvas.getContext("2d");
+                    // this.webcamCanvas.style.position = "fixed";
+                    // this.webcamCanvas.style.top = "0";
+                    // this.webcamCanvas.style.left = "0";
+                    // this.webcamCanvas.style.width = "900px";
+                    // this.webcamCanvas.style.height = "150px";
+                    document.body.appendChild(this.webcamCanvas)
                   },
                 },
                 {
@@ -17775,10 +17784,16 @@
                   value: function () {
                     console.log('Attempting image capture')
                     try {
-                      this.captureImage().then(function (a) {
-                        console.log("Image captured")
-                        c.imageCaptured(a);
-                      })
+                      setTimeout(() => {
+                        this.webcamCanvas.width = this.webcam.videoWidth * 3
+                        this.webcamCanvas.height = this.webcam.videoHeight
+                        this.captureImage().then(function (a) {
+                          console.log("Image captured")
+                          c.imageCaptured(a);
+                          // TODO Sort
+                          Dispatcher.dispatch({ actionType: "ACTION_END" });
+                        })
+                      }, 3000)
                     } catch(e) {
                       console.log(e)
                     }
@@ -17797,34 +17812,31 @@
                 {
                   key: "captureImage",
                   value: function () {
-                    var a = this;
-                    return new b(function (c, d) {
-                        for (
-                          var e = 3,
-                            f = [],
-                            g = function (c) {
-                              (i = new b(function (b, d) {
-                                setTimeout(function () {
-                                  var d = c * a.webcam.videoWidth;
-                                  a.webcamContext.drawImage(a.webcam, d, 0, a.webcam.videoWidth, a.webcamCanvas.height), b();
-                                }, 1000 * (c + 1));
-                              })),
-                                f.push(i);
-                            },
-                            h = 0;
-                          e > h;
-                          h++
-                        ) {
-                          var i;
-                          g(h);
-                        }
-                        b.all(f).then(function () {
-                          var b = a.webcamContext.getImageData(0, 0, a.webcamCanvas.width, a.webcamCanvas.height);
-                          a.webcamContext.putImageData(a.desaturateImage(b), 0, 0);
-                          var d = a.webcamCanvas.toDataURL("image/jpeg", 0.8).split(",")[1];
-                          c(d);
-                        });
-                    });
+                    return new Promise((resolve, reject) => {
+                      let totalSnapshots = 3
+                      let promises = []
+
+                      for (let i = 0; i < totalSnapshots; i++) {
+                        var promise = new Promise((resolve, reject) => {
+                          setTimeout(() => {
+                            let xPosition = i * this.webcam.videoWidth
+
+                            this.webcamContext.drawImage(this.webcam, xPosition, 0, this.webcam.videoWidth, this.webcamCanvas.height)
+                            resolve()
+                          }, ((i + 1) * 1000) )
+                        })
+                        promises.push(promise)
+                      }
+                
+                      Promise.all(promises).then(() => {
+                        setTimeout(() => {
+                        var imageData = this.webcamContext.getImageData(0, 0, this.webcamCanvas.width, this.webcamCanvas.height)
+                        this.webcamContext.putImageData(this.desaturateImage(imageData), 0, 0)
+                        var image = this.webcamCanvas.toDataURL('image/jpeg', 0.8).split(',')[1]
+                        resolve(image)
+                        }, 1000)
+                      })
+                    })
                   },
                 },
               ]),
@@ -26722,14 +26734,16 @@
                   }
 
                     this.webcamInitiated = !0;
-                    const video = isLandscapeOrientation() ? {aspectRatio: 16/9} : {aspectRatio: 9/16}
+                    const video = isLandscapeOrientation() ? {aspectRatio: 16/9, width: 640, height: 360} : {aspectRatio: 9/16, width: 360, height: 640}
+
+                    a.width = video.width
+                    a.height = video.height
 
                     var constraints = { video, audio: false };
                     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
                       a.onloadedmetadata = function (b) {
                         a.play();
                       }
-
                         a.srcObject = stream
                         p.instance.setupWebcam()
                         new c(a)
@@ -26739,7 +26753,7 @@
                         window.addEventListener("orientationchange", function() {
                           a.pause()
                           a.srcObject = null
-                          navigator.mediaDevices.getUserMedia({video: isLandscapeOrientation() ? {aspectRatio: 16/9} : {aspectRatio: 9/16}}).then((newStream) => {
+                          navigator.mediaDevices.getUserMedia({video: isLandscapeOrientation() ? {aspectRatio: 16/9, width: 640, height: 360} : {aspectRatio: 9/16, width: 360, height: 640}}).then((newStream) => {
                             a.srcObject = stream = newStream
                             a.play()
                           })
