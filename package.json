@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superhighfives/iwnlyg.git"
+    "url": "git+https://github.com/superhighfives/i-will-never-let-you-go.git"
   },
   "scripts": {
-    "start": "npx serve publish",
-    "deploy": "npx wrangler pages publish . --project-name iwillneverletyougo"
+    "start": "npx serve public",
+    "deploy": "npx wrangler pages publish public --project-name iwillneverletyougo"
   },
   "license": "MIT",
   "homepage": "https://iwillneverletyougo.wearebrightly.com"
