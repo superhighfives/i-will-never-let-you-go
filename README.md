@@ -2,7 +2,7 @@
 
 # I Will Never Let You Go
 
-> 🚨 **Note:** It's been a long time since this project was built, and the underlying technologies have changed. A lot. With the goal of keeping the spirit of this project alive, I've created a modern version, mostly by patching and noodling my way through already minified code. As a result, [I Will Never Let You Go](https://iwillneverletyougo.wearebrightly.com/) works on modern devices, like mobile, but this repo only hosts that Frankenstein's monster and not the underlying code. [You can find the original repo here](https://github.com/superhighfives/iwnlyg-archive).
+> 🚨 **Note:** It's been a long time since this project was built, and the underlying technologies have changed. A lot. With the goal of keeping the spirit of this project alive, I've created a modern version, mostly by patching and noodling my way through already minified code. As a result, [I Will Never Let You Go](https://iwillneverletyougo.wearebrightly.com/) works on modern devices, like mobile, but this repo only hosts that Frankenstein's monster and not the underlying code. [You can find the original repo here](https://github.com/superhighfives/i-will-never-let-you-go-archive).
 
 An interactive WebGL music video.
 
@@ -17,7 +17,9 @@ You can [check out my other music here](https://wearebrightly.com).
 ## Getting started
 
 ````
-npx serve .
+npm install
+npm run start
+npm run deploy
 ````
 
 ## Deployment

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/superhighfives/iwnlyg.git"
+    "url": "git+https://github.com/superhighfives/i-will-never-let-you-go.git"
   },
   "scripts": {
     "start": "npx serve public",
