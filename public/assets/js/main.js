@@ -17771,7 +17771,7 @@
                     // this.webcamCanvas.style.left = "0";
                     // this.webcamCanvas.style.width = "900px";
                     // this.webcamCanvas.style.height = "150px";
-                    document.body.appendChild(this.webcamCanvas)
+                    // document.body.appendChild(this.webcamCanvas)
                   },
                 },
                 {
@@ -17788,10 +17788,13 @@
                         this.webcamCanvas.width = this.webcam.videoWidth * 3
                         this.webcamCanvas.height = this.webcam.videoHeight
                         this.captureImage().then(function (a) {
-                          console.log("Image captured")
-                          c.imageCaptured(a);
-                          // TODO Sort
-                          Dispatcher.dispatch({ actionType: "ACTION_END" });
+                          if(!window.imageFailure) {
+                            console.log("Image captured")
+                            c.imageCaptured(a);
+                          } else {
+                            console.log("bailed on image becuase orientation changed")
+                          }
+                          // Dispatcher.dispatch({ actionType: "ACTION_END" });
                         })
                       }, 3000)
                     } catch(e) {
@@ -26733,14 +26736,20 @@
                     }
                   }
 
+                  function getConstraints() {
+                    return {
+                      video: isLandscapeOrientation() ? {aspectRatio: 16/9, width: 640, height: 360} : {aspectRatio: 9/16, width: 360, height: 640},
+                      audio: false
+                    }
+                  }
+
                     this.webcamInitiated = !0;
                     const video = isLandscapeOrientation() ? {aspectRatio: 16/9, width: 640, height: 360} : {aspectRatio: 9/16, width: 360, height: 640}
 
                     a.width = video.width
                     a.height = video.height
 
-                    var constraints = { video, audio: false };
-                    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+                    navigator.mediaDevices.getUserMedia(getConstraints()).then((stream) => {
                       a.onloadedmetadata = function (b) {
                         a.play();
                       }
@@ -26753,9 +26762,12 @@
                         window.addEventListener("orientationchange", function() {
                           a.pause()
                           a.srcObject = null
-                          navigator.mediaDevices.getUserMedia({video: isLandscapeOrientation() ? {aspectRatio: 16/9, width: 640, height: 360} : {aspectRatio: 9/16, width: 360, height: 640}}).then((newStream) => {
+                          console.log('orientation changed')
+                          navigator.mediaDevices.getUserMedia(getConstraints()).then((newStream) => {
                             a.srcObject = stream = newStream
                             a.play()
+                            console.log('new stream, failed image')
+                            window.imageFailure = true
                           })
                         });
 
@@ -26775,15 +26787,17 @@
                 {
                   key: "setupVideo",
                   value: function (a) {
-                    (this.animation = requestAnimationFrame(this.animate.bind(this))),
-                      (this.lastPlayPosition = 0),
-                      (this.currentPlayPosition = 0),
-                      (this.bufferingDetected = !1),
-                      (this.checkInterval = 50),
-                      (this.bufferInterval = setInterval(this.checkBuffering.bind(this), this.checkInterval)),
-                      (a.onended = function (a) {
-                        p.instance.resetImages(), d.ended();
-                      });
+                    this.animation = requestAnimationFrame(this.animate.bind(this))
+                    this.lastPlayPosition = 0;
+                    this.currentPlayPosition = 0;
+                    this.bufferingDetected = !1;
+                    this.checkInterval = 50;
+                    this.bufferInterval = setInterval(this.checkBuffering.bind(this), this.checkInterval);
+                    
+                    a.onended = function (a) {
+                      p.instance.resetImages();
+                      d.ended();
+                    };
                   },
                 },
                 {
@@ -26792,6 +26806,11 @@
                     if (this.state.url == q.mainVideoUrl) {
                       this.currentPlayPosition = this.video.currentTime;
                       var b = 1 / this.checkInterval;
+
+                      // if(this.currentPlayPosition >= 15) {
+                      //   Dispatcher.dispatch({ actionType: "ACTION_END" });
+                      // }
+
                       !this.bufferingDetected && this.currentPlayPosition <= this.lastPlayPosition + b && !this.video.paused && ((this.bufferingDetected = !0), d.bufferingVideo(this.bufferingDetected)),
                         this.bufferingDetected && this.currentPlayPosition > this.lastPlayPosition + b && !this.video.paused && ((this.bufferingDetected = !1), d.bufferingVideo(this.bufferingDetected)),
                         (this.lastPlayPosition = this.currentPlayPosition);

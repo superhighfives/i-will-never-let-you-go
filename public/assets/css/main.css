@@ -6837,6 +6837,7 @@ html.wf-loading body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   background-position: 0 1px;
   border: 2px solid rgba(255, 255, 255, 0.9);
+  max-width: 1280px;
 }
 .snapshot:after,
 .snapshot:before {
